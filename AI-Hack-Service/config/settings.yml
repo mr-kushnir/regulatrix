@@ -1,0 +1,32 @@
+default:
+  NAME: AI_HACK_SERVICE
+  PORT: 8070
+  HOST: 0.0.0.0
+  CORS_ORIGINS: [ "*" ]
+  DEBUG: false
+  RELOADED: false
+
+  LOGGING:
+    version: 1
+    disable_existing_loggers: false
+    formatters:
+      default:
+        format: '[%(asctime)s] %(levelname)-8s# %(filename)s[LINE:%(lineno)d] %(message)s'
+    handlers:
+      console:
+        level: INFO
+        class: logging.StreamHandler
+        formatter: default
+        stream: ext://sys.stdout
+      error:
+        level: ERROR
+        class: logging.StreamHandler
+        formatter: default
+        stream: ext://sys.stderr
+    loggers:
+      default:
+        level: DEBUG
+        handlers: [ console, error ]
+    root:
+      level: DEBUG
+      handlers: [ console, error ]
