@@ -61,7 +61,7 @@
 
 ## Ссылки на материалы
 
-- [Yandex GPT Documentation](https://yandex.com)
+- [Yandex GPT Documentation](https://ya.ru/ai/gpt-2)
 - [T-Lite LLM Documentation](https://huggingface.co/IlyaGusev/T-lite-instruct-0.1-abliterated)
 - [intfloat/multilingual-e5-base Model](https://huggingface.co/intfloat/multilingual-e5-base)
 - [FastAPI Documentation](https://fastapi.tiangolo.com/)
