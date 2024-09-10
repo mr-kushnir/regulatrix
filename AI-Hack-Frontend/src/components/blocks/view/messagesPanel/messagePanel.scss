@@ -1,0 +1,24 @@
+.message {
+
+
+  &--center {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  &--right {
+    display: flex;
+    justify-content: flex-end;
+    width: -webkit-fill-available;
+  }
+
+  &__title {
+    word-break: break-all;
+    padding: 0 10px;
+  }
+
+  &__title--active {
+    font-weight: 600 !important;
+    color: var(--light)
+  }
+}

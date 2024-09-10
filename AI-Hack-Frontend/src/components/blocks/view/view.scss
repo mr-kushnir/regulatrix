@@ -1,0 +1,29 @@
+
+.view {
+  width: calc(100% - (100% / 4));
+  background-color: var(--light-gray);
+  min-height: 100vh;
+  transition: var(--transition);
+  box-shadow: inset 10px 10px 10px #1c1c1c;
+
+
+  &-disabled {
+    width: calc(100%);
+    transition: var(--transition);
+  }
+
+  &__box {
+    border-radius: 1rem;
+    border: 1px solid #2f2f2f !important;
+    width: 160px;
+    height: 120px;
+    padding: 10px;
+    text-align: left;
+    font-weight: 400
+  }
+
+
+}
+
+
+@import "./messagesPanel/messagePanel";

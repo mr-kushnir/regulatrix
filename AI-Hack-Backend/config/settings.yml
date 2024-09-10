@@ -1,0 +1,59 @@
+default:
+  NAME: AI_HACK
+  PORT: 8088
+  HOST: 0.0.0.0
+  CORS_ORIGINS: [ "*" ]
+
+  DEBUG: false
+  RELOADED: false
+  LIFESPAN: on
+
+  POSTGRES:
+    echo: false
+    echo_pool: false
+    driver: postgresql+asyncpg
+    port: 7432
+    user: sampleuser
+    host: ""
+    password: ""
+    database: sampledb
+    pool_pre_ping: true
+    pool_recycle: 3000
+
+  S3:
+    chat_file_folder: chat_file_folder
+    bucket_name: regulatrix
+    port: 443
+    host: ""
+    protocol: https
+    verify: true
+    access_key: ""
+    secret_key: ""
+    version: s3v4
+    expiration_time_link_object: 3600
+    expiration_time_link_archive_order: 86400 # 3600 * 24
+
+  LOGGING:
+    version: 1
+    disable_existing_loggers: false
+    formatters:
+      default:
+        format: '[%(asctime)s] %(levelname)-8s# %(filename)s[LINE:%(lineno)d] %(message)s'
+    handlers:
+      console:
+        level: INFO
+        class: logging.StreamHandler
+        formatter: default
+        stream: ext://sys.stdout
+      error:
+        level: ERROR
+        class: logging.StreamHandler
+        formatter: default
+        stream: ext://sys.stderr
+    loggers:
+      default:
+        level: DEBUG
+        handlers: [ console, error ]
+    root:
+      level: DEBUG
+      handlers: [ console, error ]

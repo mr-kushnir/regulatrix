@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "AI Hack"
+version = "0.1.0"
+description = ""
+authors = ["Mikhail Tretyakov <Imtretyakov@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.110.1"
+uvicorn = { extras = ["standart"], version = "^0.27.1" }
+greenlet = "^3.0.3"
+dynaconf = "^3.2.6"
+pandas = "^2.2.2"
+transformers = "^4.44.2"
+pytest = "^8.3.2"
+torch = "^2.4.1"
+aioboto3 = "^13.1.1"
+
+
+[tool.poetry.group.dev.dependencies]
+isort = "^5.13.2"
+black = "^24.8.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
