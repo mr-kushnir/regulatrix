@@ -10,7 +10,7 @@ import torch.nn.functional as F
 from torch import Tensor
 import requests
 
-from app.core.context import ApplicationContext
+
 
 
 class MessageService:
