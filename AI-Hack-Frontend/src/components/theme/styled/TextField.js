@@ -1,6 +1,7 @@
 import {styled, TextField} from "@mui/material";
 
 const StyledTextField = styled(TextField)(({theme}) => ({
+    zIndex: 1000,
     '& .MuiOutlinedInput-root': {
         '& fieldset': {
             borderColor: 'transparent', // убирает границу
@@ -14,6 +15,9 @@ const StyledTextField = styled(TextField)(({theme}) => ({
         backgroundColor: theme.palette.primary.lightGray,
         color: "white"
 
+    },
+    '& .MuiFormLabel-root': {
+        zIndex: 110
     },
     '& .MuiInputBase-input': {
         color: 'white', // цвет текста

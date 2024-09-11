@@ -51,7 +51,7 @@ a {
   --light-gray: #212121;
   --dark-gray: #171717;
   --black: #212b36;
-  --white-blue: #d6f2fc;
+  --white-gray: #838383;
   --light: #ffffff;
 
   //transition
@@ -99,8 +99,8 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 
-@import "./components/blocks/sidebar/sidebar.scss";
-@import "./components/blocks/view/view.scss";
-@import "./components/blocks/auth/auth.scss";
+@import "components/shared/sidebar/sidebar.scss";
+@import "components/shared/view/view.scss";
+@import "components/pages/auth/auth.scss";
 
 

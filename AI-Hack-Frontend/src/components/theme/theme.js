@@ -94,7 +94,7 @@ export const theme = createTheme({
             classicGray: '#cacaca',
             warmLightGray: '#eae9e5',
             white: '#ffffff',
-            main: '#e5e0fe',
+            main: '#ffffff',
             skeleton: "#2f2f2f59",
             lightGray: "#2f2f2f",
             middleGray: "#212121",

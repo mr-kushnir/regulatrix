@@ -21,6 +21,7 @@ class ChatRepository:
             user_id: Optional[int] = None,
             start_datetime: Optional[datetime] = None,
             end_datetime: Optional[datetime] = None,
+            search_text: Optional[str] = None,
             limit: Optional[int] = None,
             offset: Optional[int] = None,
     ) -> List[Chat]:
@@ -32,7 +33,9 @@ class ChatRepository:
             stmt = stmt.where(Chat.date_updated >= start_datetime)
         if end_datetime:
             stmt = stmt.where(Chat.date_updated <= end_datetime)
-
+        if search_text:
+            search = f"%{search_text}%"
+            stmt = stmt.where(Chat.title.ilike(search))
         # Пагинация
         if limit:
             stmt = stmt.limit(limit)

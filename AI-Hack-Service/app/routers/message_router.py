@@ -12,5 +12,6 @@ async def listen_message(
         request: Request,
         message: MessageSchema,
         service: MessageService = Depends(),
+        context: ApplicationContext = Depends(ApplicationContext.get_context)
 ):
-    return await service.process_message(message)
+    return await service.process_message(context,message)

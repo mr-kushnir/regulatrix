@@ -7,10 +7,14 @@ from app.config import settings
 from app.routers.message_router import message_router
 from app.core.ceph import Ceph
 from app.core.context import ApplicationContext
+from app.core.artificial_intelligence import AIService
+
+
 class Application:
     def __init__(self):
         self.app = FastAPI()
         self.ceph = Ceph(settings.S3)
+        self.AI = AIService()
 
     def _init_logger(self) -> None:
         """Инициализация логгера"""
@@ -31,9 +35,11 @@ class Application:
         )
 
     def _init_context(self):
-        ApplicationContext(
-            ceph=self.ceph
+        return ApplicationContext(
+            ceph=self.ceph,
+            AI=self.AI,
         )
+
     def _add_routers(self) -> None:
         """Добавление роутеров"""
         self.app.include_router(message_router)

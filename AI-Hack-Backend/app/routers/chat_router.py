@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, Path
 from fastapi.openapi.models import Response
@@ -41,8 +41,9 @@ async def get_chats(
         user_id: int = Path(...),
         service: ChatService = Depends(),
         context: ApplicationContext = Depends(ApplicationContext.get_context),
+        search_text: Optional[str] = None
 ) -> List[ResponseChatSchema]:
-    return await service.get_user_chats(context, user_id)
+    return await service.get_user_chats(context, user_id, search_text=search_text)
 
 
 @chat_router.get(

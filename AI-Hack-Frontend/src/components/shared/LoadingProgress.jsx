@@ -1,10 +1,10 @@
 import React from 'react';
 import {CircularProgress} from "@mui/material";
 
-const LoadingProgress = ({isLoading, size = 23, value}) => {
+const LoadingProgress = ({className = "", isLoading, size = 23, value = "", color = "primary"}) => {
     return (
         <>
-            {isLoading ? <CircularProgress size={size} color='primary'/> : value}
+            {isLoading ? <CircularProgress className={className} size={size} color={color}/> : value}
         </>
     );
 };

@@ -14,8 +14,10 @@ class ChatService {
     }
 
     // Получение списка чатов
-    static async getChats(user_id) {
-        const response = await server.get(`/user/${user_id}/chats`);
+    static async getChats(user_id, search_text = null) {
+        console.log(search_text)
+        const param = `?search_text=${search_text}`
+        const response = await server.get(`/user/${user_id}/chats${search_text ? param : ""}`);
         return response.data;
     }
 
