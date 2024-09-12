@@ -24,10 +24,10 @@ class Application:
         self.app.add_middleware(
             CORSMiddleware,
             allow_origins=[
-                "http://localhost:5173",
-                "http://127.0.0.1:5173",
-                "http://0.0.0.0:5173",
-                "http://portainer.regulatrix.ru:5167",
+                "http://localhost:8088",
+                "http://127.0.0.1:8088",
+                "http://0.0.0.0:8088",
+                "http://backend:8088",
             ],
             allow_credentials=True,
             allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],

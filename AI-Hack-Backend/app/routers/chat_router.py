@@ -14,21 +14,21 @@ chat_router = APIRouter(prefix="/api", tags=["chat"])
 
 @chat_router.post("/chat", description="Создание чата")
 async def create_chat(
-        request: Request,
-        chat_data: CreateChatSchema,
-        service: ChatService = Depends(),
-        context: ApplicationContext = Depends(ApplicationContext.get_context),
+    request: Request,
+    chat_data: CreateChatSchema,
+    service: ChatService = Depends(),
+    context: ApplicationContext = Depends(ApplicationContext.get_context),
 ):
     return await service.create_chat(context, chat_data)
 
 
 @chat_router.post("/chat/{chat_id}/create_message", description="Создание сообщения")
 async def create_message(
-        request: Request,
-        chat_data: CreateMessageSchema,
-        chat_id: int = Path(...),
-        service: ChatService = Depends(),
-        context: ApplicationContext = Depends(ApplicationContext.get_context),
+    request: Request,
+    chat_data: CreateMessageSchema,
+    chat_id: int = Path(...),
+    service: ChatService = Depends(),
+    context: ApplicationContext = Depends(ApplicationContext.get_context),
 ) -> ResponseMessageSchema:
     return await service.add_message_to_chat(context, chat_data, chat_id)
 
@@ -37,11 +37,11 @@ async def create_message(
     "/user/{user_id}/chats", description="Получение чатов конкретного пользователя"
 )
 async def get_chats(
-        request: Request,
-        user_id: int = Path(...),
-        service: ChatService = Depends(),
-        context: ApplicationContext = Depends(ApplicationContext.get_context),
-        search_text: Optional[str] = None
+    request: Request,
+    user_id: int = Path(...),
+    service: ChatService = Depends(),
+    context: ApplicationContext = Depends(ApplicationContext.get_context),
+    search_text: Optional[str] = None,
 ) -> List[ResponseChatSchema]:
     return await service.get_user_chats(context, user_id, search_text=search_text)
 
@@ -50,10 +50,10 @@ async def get_chats(
     "/chat/{chat_id}/messages", description="Получение чатов конкретного пользователя"
 )
 async def get_messages(
-        request: Request,
-        chat_id: int = Path(...),
-        service: ChatService = Depends(),
-        context: ApplicationContext = Depends(ApplicationContext.get_context),
+    request: Request,
+    chat_id: int = Path(...),
+    service: ChatService = Depends(),
+    context: ApplicationContext = Depends(ApplicationContext.get_context),
 ) -> List[ResponseMessageSchema]:
     return await service.get_message_from_chat(context, chat_id)
 
@@ -63,10 +63,10 @@ async def get_messages(
     description="Удаление чата конкретного пользователя",
 )
 async def delete_chat(
-        request: Request,
-        user_id: int = Path(...),
-        chat_id: int = Path(...),
-        service: ChatService = Depends(),
-        context: ApplicationContext = Depends(ApplicationContext.get_context),
+    request: Request,
+    user_id: int = Path(...),
+    chat_id: int = Path(...),
+    service: ChatService = Depends(),
+    context: ApplicationContext = Depends(ApplicationContext.get_context),
 ) -> Response:
     return await service.delete_user_chat(context, user_id, chat_id)

@@ -26,13 +26,19 @@ class ChatService:
             await validate_user_data_by_id(session, user_id=data.user_id)
             return await self.chat_repository.create_chat(session, data)
 
-    async def get_user_chats(self, context: ApplicationContext, user_id, search_text) -> List[Chat]:
+    async def get_user_chats(
+            self, context: ApplicationContext, user_id, search_text
+    ) -> List[Chat]:
+        """Получение списка чатов пользователя"""
         async with context.database.session_context() as session:
-            return await self.chat_repository.get_chats(session, user_id=user_id, search_text=search_text)
+            return await self.chat_repository.get_chats(
+                session, user_id=user_id, search_text=search_text
+            )
 
     async def delete_user_chat(
             self, context: ApplicationContext, user_id: int, chat_id: int
     ) -> Response:
+        """Удаление чата пользователя"""
         async with context.database.session_context() as session:
             await validate_user_data_by_id(session, user_id=user_id)
             await validate_chat_data(session, chat_id=chat_id)

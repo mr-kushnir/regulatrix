@@ -60,22 +60,3 @@ async def fetch_instance(
     return (
         await session.execute(select(model).where(model.id == instance_id))
     ).scalar_one_or_none()
-
-
-async def delete_instance(
-    session: AsyncSession,
-    instance_id: int,
-    model: Base,
-) -> None:
-    """Удаление записи"""
-    await session.execute(delete(model).where(model.id == instance_id))
-
-
-def update_instance_fields(instance: BaseModel, new_fields: Dict[str, Any]) -> None:
-    """Обновление полей модели"""
-    model = type(instance)
-    for attribute, new_value in new_fields.items():
-        model_field = model.__dict__.get(attribute)
-        if model_field and isinstance(model_field.property, ColumnProperty):
-            if getattr(instance, attribute) != new_value:
-                setattr(instance, attribute, new_value)

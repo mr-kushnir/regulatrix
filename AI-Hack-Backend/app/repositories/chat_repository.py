@@ -25,7 +25,7 @@ class ChatRepository:
             limit: Optional[int] = None,
             offset: Optional[int] = None,
     ) -> List[Chat]:
-
+        """Получение чатов"""
         stmt = select(Chat)
         if user_id:
             stmt = stmt.where(Chat.user_id == user_id)
@@ -36,7 +36,6 @@ class ChatRepository:
         if search_text:
             search = f"%{search_text}%"
             stmt = stmt.where(Chat.title.ilike(search))
-        # Пагинация
         if limit:
             stmt = stmt.limit(limit)
         if offset:
@@ -64,13 +63,14 @@ class ChatRepository:
         return chat
 
     async def delete_chat(self, session: AsyncSession, chat_id: int) -> None:
+        """Удаление чата"""
         stmt = delete(Chat).where(Chat.id == chat_id)
         await session.execute(stmt)
         await session.commit()
 
     async def create_chat_file(
             self, session: AsyncSession, ceph: Ceph, file_object: UploadFile, chat_id: int
-    ):
+    ) -> None:
         """Создание файла чата"""
         file_url = f"{settings.S3.chat_file_folder}/{uuid4()}/{file_object.filename}"
         await ceph.put_object(data=file_object.file, key=file_url)
@@ -96,8 +96,7 @@ class ChatRepository:
         return message
 
     async def get_message(self, session: AsyncSession, chat_id: int) -> List[Message]:
-        """Создание сообщения"""
+        """Получение сообщения"""
         stmt = select(Message).where(Message.chat_id == chat_id)
-
         result = await session.execute(stmt)
         return result.scalars().fetchall()

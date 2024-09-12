@@ -14,6 +14,7 @@ class UserService:
         self.user_repository = UserRepository()
 
     async def get_user(self, context: ApplicationContext, user_login: str) -> User:
+        """Получение пользователя"""
         async with context.database.session_context() as session:
             user = await self.user_repository.get_user_by_login(session, user_login)
             if not user:
@@ -26,6 +27,7 @@ class UserService:
     async def create_user(
         self, context: ApplicationContext, data: CreateUserSchema
     ) -> User:
+        """Создание пользователя"""
         async with context.database.session_context() as session:
             await validate_user_data_by_login(session, data.login)
             return await self.user_repository.create_user(session, data)
@@ -33,6 +35,7 @@ class UserService:
     async def authorize(
         self, context: ApplicationContext, data: AuthorizeUserSchema
     ) -> User:
+        """Авторизация пользователя"""
         async with context.database.session_context() as session:
             user = (
                 await session.execute(select(User).where(User.login == data.login))

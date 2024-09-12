@@ -5,6 +5,7 @@ from torch import Tensor
 import requests
 from app.core.context import ApplicationContext
 from app.core.artificial_intelligence import AIService
+from app.schemas.message import DataSchema
 
 
 class MessageService:
@@ -47,10 +48,10 @@ class MessageService:
         response_text = json.loads(response.text)['result']['alternatives'][0]['message']['text']
         return response_text
 
-    async def process_message(self, context: ApplicationContext, message: str) -> str:
+    async def process_message(self, context: ApplicationContext, data: DataSchema) -> str:
         logging.info("Старт обработки сообщения")
         AI = context.AI
-        query_embed = await self._get_query_embedding(AI, message)
+        query_embed = await self._get_query_embedding(AI, data.message)
         scores = (query_embed @ AI.embeddings.T) * 100
         sorted_ind_scores = list(sorted(enumerate(scores), key=lambda x: x[1], reverse=True))
         best_inds = [x[0] for x in sorted_ind_scores[:3]]
@@ -59,7 +60,7 @@ class MessageService:
         chunks_prompt = ""
         for i, chunk in enumerate(best_chunks, 1):
             chunks_prompt += f"Фрагмент {i}: \n{chunk}\n\n"
-        prompt = AI.llm_prompt.format_map({'question': message, 'chunks': chunks_prompt})
+        prompt = AI.llm_prompt.format_map({'question': data.message, 'chunks': chunks_prompt})
         llm_answer = self._get_yagpt_answer(prompt)
         logging.info("Обработка сообщения завершена")
         return llm_answer
