@@ -24,7 +24,7 @@ class MessageService:
                                               tokenized['attention_mask'])).detach().cpu()  # type: ignore
         return F.normalize(embedding, p=2, dim=1)[0]
 
-    def _get_yagpt_answer(self, prompt: str) -> str:
+    def _get_yagpt_answer(self, messages) -> str:
         ya_gpt_prompt = {
             "modelUri": "gpt://b1gk6eq8dgq50340i2bk/yandexgpt-lite",
             "completionOptions": {
@@ -32,12 +32,7 @@ class MessageService:
                 "temperature": 0,
                 "maxTokens": "2000"
             },
-            "messages": [
-                {
-                    "role": "user",
-                    "text": prompt
-                },
-            ]
+            "messages": messages
         }
         url = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
         headers = {
@@ -48,10 +43,17 @@ class MessageService:
         response_text = json.loads(response.text)['result']['alternatives'][0]['message']['text']
         return response_text
 
-    async def process_message(self, context: ApplicationContext, data: DataSchema) -> str:
-        logging.info("Старт обработки сообщения")
+    async def process_message(self, context: ApplicationContext, history, message: str) -> str:
+        if history:
+            final_message = message
+            for m in history:
+                if m['role'] == 'user':
+                    final_message += m['content']
+            final_message += message
+        else:
+            final_message = message
         AI = context.AI
-        query_embed = await self._get_query_embedding(AI, data.message)
+        query_embed = await self._get_query_embedding(AI, final_message)
         scores = (query_embed @ AI.embeddings.T) * 100
         sorted_ind_scores = list(sorted(enumerate(scores), key=lambda x: x[1], reverse=True))
         best_inds = [x[0] for x in sorted_ind_scores[:3]]
@@ -60,7 +62,12 @@ class MessageService:
         chunks_prompt = ""
         for i, chunk in enumerate(best_chunks, 1):
             chunks_prompt += f"Фрагмент {i}: \n{chunk}\n\n"
-        prompt = AI.llm_prompt.format_map({'question': data.message, 'chunks': chunks_prompt})
-        llm_answer = self._get_yagpt_answer(prompt)
+
+        messages = [{"role": "system", "text": AI.llm_prompt.format_map({'chunks': chunks_prompt})}]
+        messages += history
+        messages.append({"role": "user", "content": message})
+        llm_answer = self._get_yagpt_answer(messages)
+
         logging.info("Обработка сообщения завершена")
+
         return llm_answer
