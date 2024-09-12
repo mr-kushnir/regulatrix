@@ -3,7 +3,7 @@
 # It's necessary to set this because some environments don't link sh -> bash.
 SHELL := /bin/bash
 PYTHON := python3
-SERVICES := ./services
+SERVICES := ./app
 
 .PHONY: help venv sort lint black migrations migrate format_code
 

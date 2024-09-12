@@ -29,6 +29,7 @@ class GPTService:
             assistant_response = await self._get_assistant_response(
                 {"message": data.message, "context": jsonable_encoder(message_context)}
             )
+            logging.info(assistant_response)
             message = await self._chat_repository.create_message(
                 database_session,
                 data.chat_id,

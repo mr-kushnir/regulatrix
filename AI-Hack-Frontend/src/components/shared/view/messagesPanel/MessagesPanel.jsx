@@ -25,7 +25,7 @@ const MessagesPanel = ({isAILoading}) => {
             height="100%"
             flex-direction="column"
             gap="10px"
-            overflow="scroll"
+            overflow="auto"
             ref={containerRef}
         >
             <Box display="flex" flexDirection='column' gap='35px' pt='20px'

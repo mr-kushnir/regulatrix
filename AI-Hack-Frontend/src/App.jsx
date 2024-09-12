@@ -7,7 +7,7 @@ import useSidebar from "./components/hooks/useSidebar.jsx";
 import LeftSidebar from "./components/shared/sidebar/Sidebar.jsx";
 import View from './components/shared/view/View.jsx'
 const App = () => {
-    const {handleChange, isSidebarOpen} = useSidebar()
+    const {handleChange, isSidebarOpen} = useSidebar(true)
     const location = useLocation();
 
     return (

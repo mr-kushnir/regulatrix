@@ -5,6 +5,7 @@ from torch import Tensor
 import requests
 from app.core.context import ApplicationContext
 from app.core.artificial_intelligence import AIService
+from app.core.enums import MessageTypeEnum
 from app.schemas.message import DataSchema
 
 
@@ -43,16 +44,17 @@ class MessageService:
         response_text = json.loads(response.text)['result']['alternatives'][0]['message']['text']
         return response_text
 
-    async def process_message(self, context: ApplicationContext, history, message: str) -> str:
-        if history:
-            final_message = message
-            for m in history:
-                if m['role'] == 'user':
-                    final_message += m['content']
-            final_message += message
-        else:
-            final_message = message
+    async def process_message(self, context: ApplicationContext, data: DataSchema) -> str:
         AI = context.AI
+        if context:
+            final_message = data.message
+            for last_context_message in data.context:
+                if last_context_message.message_type == MessageTypeEnum.USER:
+                    final_message += last_context_message.message
+            final_message += data.message
+        else:
+            final_message = data.message
+
         query_embed = await self._get_query_embedding(AI, final_message)
         scores = (query_embed @ AI.embeddings.T) * 100
         sorted_ind_scores = list(sorted(enumerate(scores), key=lambda x: x[1], reverse=True))
@@ -64,8 +66,9 @@ class MessageService:
             chunks_prompt += f"Фрагмент {i}: \n{chunk}\n\n"
 
         messages = [{"role": "system", "text": AI.llm_prompt.format_map({'chunks': chunks_prompt})}]
-        messages += history
-        messages.append({"role": "user", "content": message})
+        # ???
+        messages += data.context
+        messages.append({"role": "user", "content": data.message})
         llm_answer = self._get_yagpt_answer(messages)
 
         logging.info("Обработка сообщения завершена")

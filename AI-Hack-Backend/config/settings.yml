@@ -8,6 +8,10 @@ default:
   RELOADED: false
   LIFESPAN: on
 
+  MESSAGE_CONTEXT_LIMIT: 10
+  SERVICE_URL: http://0.0.0.0:8070
+  #  SERVICE_URL: http://backend-service:8070
+
   POSTGRES:
     echo: false
     echo_pool: false
