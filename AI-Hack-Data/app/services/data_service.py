@@ -1,6 +1,6 @@
 from typing import List
-
 from fastapi import UploadFile
+from take_text import TakeText
 
 
 class DataService:
