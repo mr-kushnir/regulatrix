@@ -66,9 +66,10 @@ class MessageService:
             chunks_prompt += f"Фрагмент {i}: \n{chunk}\n\n"
 
         messages = [{"role": "system", "text": AI.llm_prompt.format_map({'chunks': chunks_prompt})}]
-        # ???
-        messages += data.context
-        messages.append({"role": "user", "content": data.message})
+        for message in data.context:
+            role = "user" if message.message_type == MessageTypeEnum.USER else "assistant"
+            messages.append({"role": role, "text": message.message})
+        messages.append({"role": "user", "text": data.message})
         llm_answer = self._get_yagpt_answer(messages)
 
         logging.info("Обработка сообщения завершена")
