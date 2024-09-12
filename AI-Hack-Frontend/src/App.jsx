@@ -11,19 +11,21 @@ const App = () => {
     const location = useLocation();
 
     return (
-        <Box height="100vh" width="100vw">
-            {location.pathname !== '/login' && <Header handleChange={handleChange}/>}
-            <Box display="flex" height='100vh' width='100vw'>
-                {location.pathname !== '/login' && <LeftSidebar isSidebarOpen={isSidebarOpen}/>}
-                <Routes>
-                    <Route path="/" element={<View isSidebarOpen={isSidebarOpen}/>}/>
-                    <Route path="/my-profile" element={<Profile isSidebarOpen={isSidebarOpen}/>}/>
-                    <Route path="/regulatory-documentation" element={<Documentation isSidebarOpen={isSidebarOpen}/>}/>
-                    <Route path="/login" element={<Auth isSidebarOpen={isSidebarOpen}/>}/>
-                </Routes>
+        <>
+            <Box height="100vh" width="100vw">
+                {location.pathname !== '/login' && <Header handleChange={handleChange}/>}
+                <Box display="flex" height='100vh' width='100vw'>
+                    {location.pathname !== '/login' && <LeftSidebar isSidebarOpen={isSidebarOpen}/>}
+                    <Routes>
+                        <Route path="/" element={<View isSidebarOpen={isSidebarOpen}/>}/>
+                        <Route path="/my-profile" element={<Profile isSidebarOpen={isSidebarOpen}/>}/>
+                        <Route path="/regulatory-documentation"
+                               element={<Documentation isSidebarOpen={isSidebarOpen}/>}/>
+                        <Route path="/login" element={<Auth isSidebarOpen={isSidebarOpen}/>}/>
+                    </Routes>
+                </Box>
             </Box>
-
-        </Box>
+        </>
     );
 }
 

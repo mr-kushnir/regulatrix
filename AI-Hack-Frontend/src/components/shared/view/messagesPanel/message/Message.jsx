@@ -1,4 +1,4 @@
-import {Box, Fade, Typography, useTheme} from "@mui/material";
+import {Box, Fade, useTheme} from "@mui/material";
 import clsx from "clsx";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -6,12 +6,16 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import DoneIcon from '@mui/icons-material/Done';
-import {useState} from "react";
+import React, {useState} from "react";
 import {useSnackbar} from "notistack";
+import PdfViewer from "../../../PDFViewer.jsx";
+import ModalWrapper from "../../../../wrappers/modalWrapper/ModalWrapper.jsx";
+import useSidebar from "../../../../hooks/useSidebar.jsx";
 
 const AI = "AI"
 const USER = "USER"
 const Message = ({item}) => {
+    const {isSidebarOpen, closeSidebar, openSidebar} = useSidebar()
     const {enqueueSnackbar} = useSnackbar()
     const theme = useTheme()
     const [isCopy, setIsCopy] = useState(false)
@@ -54,9 +58,12 @@ const Message = ({item}) => {
                     {isCopy ? <DoneIcon onClick={() => copyToBuffer(item.message)} className="panel__icon"/> :
                         <ContentCopyIcon onClick={() => copyToBuffer(item.message)} className="panel__icon"/>}
                     <ThumbUpOffAltIcon onClick={() => sendStatus(true)} className="panel__icon"/>
-                    <ThumbDownOffAltIcon onClick={() => sendStatus(true)} className="panel__icon"/>
+                    <ThumbDownOffAltIcon onClick={openSidebar} className="panel__icon"/>
                 </Box>
             </Fade>
+            <ModalWrapper open={isSidebarOpen} handleClose={closeSidebar}>
+                <PdfViewer/>
+            </ModalWrapper>
         </Box>
 
 

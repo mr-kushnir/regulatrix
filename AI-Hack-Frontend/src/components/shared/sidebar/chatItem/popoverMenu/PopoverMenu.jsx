@@ -6,7 +6,7 @@ import {useState} from "react";
 import {useSnackbar} from "notistack";
 import {getErrorMessage} from "../../../../../config/error.js";
 import {useDispatch, useSelector} from "react-redux";
-import {setChats} from "../../../../../store/slices/chat/chatSlice"
+import {setChats, setCurrentChatIndex, setMessages} from "../../../../../store/slices/chat/chatSlice"
 import ChatService from "../../../../../services/chat/ChatService.js";
 import ArchiveIcon from '@mui/icons-material/Archive';
 import LoadingProgress from "../../../LoadingProgress.jsx";
@@ -25,6 +25,8 @@ const PopoverMenu = ({closePopover, chat_id}) => {
             dispatch(setChats(
                 await ChatService.getChats(user.id)
             ))
+            dispatch(setCurrentChatIndex(null))
+            dispatch(setMessages([]))
         } catch (e) {
             enqueueSnackbar(getErrorMessage(e), {variant: "error"})
         } finally {

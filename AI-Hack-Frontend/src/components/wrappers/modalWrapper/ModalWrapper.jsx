@@ -19,15 +19,7 @@ const ModalWrapper = ({maxWidth = '700px', children, open, handleClose, title}) 
                      m="auto" onClick={handleClose}>
                     <Paper sx={{maxWidth, width: '100%', height: 'max-content'}}
                            onClick={(e) => e.stopPropagation()}>
-                        <Box p="10px 20px">
-                            <Box display='flex' justifyContent='space-between' alignItems='center'>
-                                <Typography variant='h6'>{title}</Typography>
-                                <IconButton color='primary' onClick={handleClose}>
-                                    <CloseIcon/>
-                                </IconButton>
-                            </Box>
-                            {children}
-                        </Box>
+                        {children}
                     </Paper>
                 </Box>
             </Fade>
