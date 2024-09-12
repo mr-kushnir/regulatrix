@@ -15,13 +15,14 @@ class MessageService:
         self.tokenizer = AutoTokenizer.from_pretrained('intfloat/multilingual-e5-base')
         self.embeddings = torch.vstack([torch.Tensor(json.loads(emb)) for emb in df.embeds])
         self.chunks = df['text'].tolist()
-        self.llm_prompt = "Ты выступаешь как LLM для RAG. Я подам тебе вопрос, а также фрагменты документации, в них " \
-                          "может содержаться ответ " \
-                          "на него. Проанализируй эти фрагменты и попробуй найти точный ответ на поставленный вопрос." \
-                          "\n\nВопрос: \n{question} \n\nФрагменты из документации:\n\n {chunks}" \
+        self.llm_prompt = "Ты выступаешь как LLM для RAG. Пользователь задает тебе вопросы, тебе предоставлены " \
+                          "фрагменты документации, в которых может содержаться ответ " \
+                          "на него. Проанализируй эти фрагменты и попробуй находить точные ответы на поставленные вопросы." \
+                          "\n\nФрагменты из документации:\n\n {chunks}" \
                           "\n\nЕсли во фрагментах содержится точный ответ на вопрос, ответь на него согласно документации," \
                           " ни в коем случае не упусти важных деталей, в этой задаче важно соблюдения точности. " \
-                          "Если точного ответа нет, первым делом скажи: 'Я не могу найти точный ответ на данный вопрос.'" \
+                          "Если точного ответа нет, первым делом скажи: 'Я не могу найти точный ответ на данный вопрос. " \
+                          "Попробуйте сформулировать вопрос конкретнее.'" \
                           " После этого попробуй описать релевантную вопросу информацию, которая у тебя есть." \
 
     async def _average_pool(self, last_hidden_states: Tensor,
@@ -38,7 +39,7 @@ class MessageService:
                                              tokenized['attention_mask'])).detach().cpu() # type: ignore
         return F.normalize(embedding, p=2, dim=1)[0]
 
-    def _get_yagpt_answer(self, prompt):
+    def _get_yagpt_answer(self, messages):
         ya_gpt_prompt = {
             "modelUri": "gpt://b1gk6eq8dgq50340i2bk/yandexgpt-lite",
             "completionOptions": {
@@ -46,12 +47,7 @@ class MessageService:
                 "temperature": 0,
                 "maxTokens": "2000"
             },
-            "messages": [
-                {
-                    "role": "user",
-                    "text": prompt
-                },
-            ]
+            "messages": messages
         }
         url = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
         headers = {
@@ -62,8 +58,16 @@ class MessageService:
         response_text = json.loads(response.text)['result']['alternatives'][0]['message']['text']
         return response_text
 
-    async def process_message(self, message: str) -> str:
-        query_embed = await self._get_query_embedding(message)
+    async def process_message(self, history, message: str) -> str:
+        if history:
+            final_message = message
+            for m in history:
+                if m['role'] == 'user':
+                    final_message += m['content']
+            final_message += message
+        else:
+            final_message = message
+        query_embed = await self._get_query_embedding(final_message)
         scores = (query_embed @ self.embeddings.T) * 100
         sorted_ind_scores = list(sorted(enumerate(scores), key=lambda x: x[1], reverse=True))
         best_inds = [x[0] for x in sorted_ind_scores[:3]]
@@ -72,8 +76,11 @@ class MessageService:
         chunks_prompt = ""
         for i, chunk in enumerate(best_chunks, 1):
             chunks_prompt += f"Фрагмент {i}: \n{chunk}\n\n"
-        prompt = self.llm_prompt.format_map({'question': message, 'chunks': chunks_prompt})
-        llm_answer = self._get_yagpt_answer(prompt)
+
+        messages = [{"role": "system", "text": self.llm_prompt.format_map({'chunks': chunks_prompt})}]
+        messages += history
+        messages.append(message)
+        llm_answer = self._get_yagpt_answer(messages)
 
         # print(*best_chunks, sep='\n\n')
         # print(prompt)
