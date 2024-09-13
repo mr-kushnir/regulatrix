@@ -31,7 +31,7 @@
 
 1. Клонируйте репозиторий:
    ```bash
-   git clone https://github.com/username/Regulatrix.git
+   git clone https://github.com/mr-kushnir/Regulatrix.git
    cd Regulatrix
 2. Установите зависимости:
     ```bash
