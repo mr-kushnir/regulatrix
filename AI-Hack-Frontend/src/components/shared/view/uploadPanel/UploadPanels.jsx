@@ -1,4 +1,4 @@
-import {Box, Typography, Collapse, Button, Paper, IconButton, useTheme} from "@mui/material";
+import {Box, Typography, Collapse, Button, Paper, IconButton, useTheme, useMediaQuery} from "@mui/material";
 import CloudUploadRoundedIcon from '@mui/icons-material/CloudUploadRounded';
 import {useEffect, useState} from "react";
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
@@ -82,6 +82,7 @@ const useUploadPaned = () => {
 }
 
 const UploadPanel = ({user}) => {
+    const breakpoint = useMediaQuery('(max-width:896px)');
 
     const [isLoading, setIsLoading] = useState(false)
     const theme = useTheme()
@@ -113,12 +114,12 @@ const UploadPanel = ({user}) => {
         }
     }
     const cursor = files.length === 5 ? "default" : "pointer"
+    const iconSize = breakpoint ? "50%" : "30%"
 
-
-    return (<Box display='flex' justifyContent='center' alignItems='center' flexDirection='column' gap='10px' p='30px'>
+    return (<Box display='flex' justifyContent='center' alignItems='center' flexDirection='column' gap='10px'
+                 p={breakpoint ? "40px 10px 30px 10px " : "40px 30px 30px 30px"}>
         <label htmlFor="fileUpload" style={{
             marginTop: '10px',
-            maxWidth: "500px",
             width: '100%',
             cursor: cursor
         }}>
@@ -134,13 +135,13 @@ const UploadPanel = ({user}) => {
                  onDrop={handleDrop}>
                 <CollapsePanel in={isUploaded}>
                     <DoneRoundedIcon sx={{
-                        width: '50%', height: "50%",
+                        width: iconSize, height: iconSize,
                         color: files.length >= 5 ? "gray" : "white",
                     }}/>
                 </CollapsePanel>
                 <CollapsePanel in={!isUploaded}>
                     <CloudUploadRoundedIcon sx={{
-                        width: '50%', height: "50%"
+                        width: iconSize, height: iconSize
                     }}/>
                 </CollapsePanel>
                 <input
@@ -153,11 +154,14 @@ const UploadPanel = ({user}) => {
                 />
                 <Box display='flex' flexDirection='column' alignItems='center' justifyContent="center">
                     <Box display='flex' gap='5px' alignItems='center'>
-                        <Typography color={files.length >= 5 ? "gray" : theme.palette.primary.blueBell}>Выберите
+                        <Typography whiteSpace="nowrap"
+                                    color={files.length >= 5 ? "gray" : theme.palette.primary.blueBell}>Выберите
                             файлы</Typography>
-                        <Typography color={files.length >= 5 ? "gray" : "white"}>или перетащите сюда</Typography>
+                        <Typography whiteSpace="nowrap" color={files.length >= 5 ? "gray" : "white"}>или перетащите
+                            сюда</Typography>
                     </Box>
-                    <Typography variant="subtitle2" color="gray">Загрузите не более 5 файлов
+                    <Typography variant="subtitle2" textAlign={breakpoint ? "center" : "start"} color="gray">Загрузите
+                        не более 5 файлов
                         до 10 ГБ –
                         PDF,
                         DOCX</Typography>
@@ -166,7 +170,7 @@ const UploadPanel = ({user}) => {
         </label>
         <Collapse sx={{width: "100%"}} in={isUploaded}>
             <Box display='flex' flexDirection='column' gap='10px'>
-                <Typography variant='subtitle1'>Загружено – {files.length}/5 файлов</Typography>
+                <Typography variant='subtitle1'>Загружено – {files.length}/5</Typography>
                 {files.map((element) => (
                     <Collapse key={element.name} in={true}>
                         <Box borderRadius='6px' display='flex' justifyContent='space-between' alignItems='center'
@@ -181,14 +185,16 @@ const UploadPanel = ({user}) => {
                                 </Typography>
                             </Box>
                             <IconButton onClick={() => deleteFile(element.name)} size='small'>
-                                <CancelIcon size=' small' color="primary"/>
+                                <CancelIcon color="primary" sx={{
+                                    width: "18px"
+                                }}/>
                             </IconButton>
                         </Box>
                     </Collapse>
                 ))}
                 <Box display='flex' justifyContent='end' width='100%'>
                     <Button onClick={uploadFiles} variant='contained' size='small'>
-                        Загрузить
+                        Сохранить
                     </Button>
                 </Box>
             </Box>

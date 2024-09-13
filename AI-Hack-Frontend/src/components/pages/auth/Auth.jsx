@@ -2,6 +2,7 @@ import {Box, Typography, useTheme} from "@mui/material";
 import React, {useState} from "react";
 import Login from "../auth/Login"
 import Registration from "../auth/Registration"
+import regulLogo from "../../../assets/regulLogo.png"
 
 const Auth = () => {
     const [login, setLogin] = useState("")
@@ -11,18 +12,17 @@ const Auth = () => {
     const theme = useTheme()
     return (
         <Box display="flex" height="100vh" width="100vw">
-            <Box width="50%" overflow="hidden">
+            <Box className='auth__image' width="50%" overflow="hidden">
                 <img className='img' src="startPage.jpg" alt="Изображение"/>
             </Box>
             <Box bgcolor={theme.palette.primary.middleGray} width="50%" flexGrow={1} display="flex"
                  flexDirection='column'
                  alignItems="center"
                  justifyContent="center" p="40px" boxShadow="inset 18px 5px 10px -5px rgba(0, 0, 0, 0.5)">
-                <Box width='100%' display="flex" gap="10px" mb="20px">
+                <Box width='100%' display="flex" gap="10px" mb="20px" flexWrap="wrap">
                     <Typography fontWeight={300} variant="h5"
                                 color={theme.palette.primary.typography}>{exist ? "Войти в" : "Зарегистрироваться в"}</Typography>
-                    <Typography fontWeight={600} variant="h5" color={theme.palette.primary.typography}>
-                        Regulatrix</Typography>
+                    <img className="logo" src={regulLogo} alt="Логотип"/>
                 </Box>
                 {exist &&
                     <Box display="flex" alignItems="flex-start" width="100%" mb='15px'>

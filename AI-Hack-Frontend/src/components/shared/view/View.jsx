@@ -1,4 +1,4 @@
-import {Box, Button, IconButton, InputAdornment, Typography, useTheme} from "@mui/material";
+import {Box, Button, IconButton, InputAdornment, Typography, useMediaQuery, useTheme} from "@mui/material";
 import clsx from "clsx";
 import StyledTextField from "../../theme/styled/TextField";
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
@@ -21,6 +21,7 @@ import VisuallyHiddenInput from "../../theme/styled/input.js";
 
 const View = ({isSidebarOpen}) => {
     const {enqueueSnackbar} = useSnackbar();
+    const breakpoint = useMediaQuery('(max-width:896px)');
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [message, setMessage] = useState("")
@@ -43,6 +44,10 @@ const View = ({isSidebarOpen}) => {
         e.preventDefault();
         setIsLoading(true)
         setMessage("");
+        if (message === "") {
+            enqueueSnackbar("Введите сообщение", {variant: 'info'});
+            return
+        }
         try {
             // Создаем новый чат
             const chat = await ChatService.createChat(user.id, message);
@@ -73,6 +78,10 @@ const View = ({isSidebarOpen}) => {
         setIsLoading(true)
         setMessage('')
         e.preventDefault()
+        if (message === "") {
+            enqueueSnackbar("Введите сообщение", {variant: 'info'});
+            return
+        }
         try {
             const chat_id = chats[currentChatIndex].id
             dispatch(appendMessage(
@@ -104,8 +113,7 @@ const View = ({isSidebarOpen}) => {
             <Box className={clsx({
                 view: true, "view-disabled": !isSidebarOpen,
             })}>
-                <Box height="-webkit-fill-available" position='relative' display="flex" flexDirection='column'
-                     p='40px 40px 10px 40px'>
+                <Box className="view__container">
                     <MessagesPanel isAILoading={isAILoading}/>
                     <Box className='view__gradient'></Box>
                     <Box position='absolute'/>
@@ -115,30 +123,24 @@ const View = ({isSidebarOpen}) => {
                             <StyledTextField onChange={(e) => setMessage(e.target.value)} value={message} fullWidth
                                              variant="outlined" label="Сообщение..."
                                              placeholder="Введите сообщение"
+                                             size={breakpoint ? "small" : "medium"}
                                              InputProps={{
                                                  endAdornment: (<InputAdornment position="end">
-                                                     <Button disabled={isLoading} variant="contained" type="submit"
-                                                             size='small'
-                                                             onClick={setSubmit}>
-                                                         <LoadingProgress isLoading={isLoading}
-                                                                          value={<SendRoundedIcon color="black"/>}/>
-                                                     </Button>
+                                                     {breakpoint ? <LoadingProgress isLoading={isLoading}
+                                                                                    value={<SendRoundedIcon
+                                                                                        onClick={setSubmit}
+                                                                                        type="submit"
+                                                                                        color="primary"/>}/> :
+                                                         <Button disabled={isLoading} variant="contained"
+                                                                 type="submit"
+                                                                 size='small'
+                                                                 onClick={setSubmit}>
+                                                             <LoadingProgress isLoading={isLoading}
+                                                                              value={<SendRoundedIcon
+                                                                                  color="black"/>}/>
+                                                         </Button>
+                                                     }
                                                  </InputAdornment>),
-                                                 // startAdornment: (<InputAdornment position="start">
-                                                 //     <Button
-                                                 //         component="label"
-                                                 //         role={undefined}
-                                                 //         variant="contained"
-                                                 //         tabIndex={-1}
-                                                 //         startIcon={<CloudUploadIcon/>}
-                                                 //     >
-                                                 //         {file ? "Загружено" : "Загрузить файл"}
-                                                 //         <VisuallyHiddenInput
-                                                 //             type="file"
-                                                 //             onChange={(event) => setFile(event.target.files[0])}
-                                                 //         />
-                                                 //     </Button>
-                                                 // </InputAdornment>)
                                              }}/>
                         </form>
                     </Box>

@@ -1,0 +1,47 @@
+@media(max-width: 896px) {
+  body {
+    width: auto;
+  }
+  .menu {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+  }
+  .menu-disabled {
+    left: -100%;
+  }
+  .view {
+    width: 100%;
+    background-color: var(--light-gray);
+    min-height: 100vh;
+    transition: var(--transition);
+    box-shadow: inset 10px 10px 10px #1c1c1c;
+
+    &__container {
+      height: -webkit-fill-available;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 40px 10px 10px 10px
+    }
+  }
+  .header {
+    z-index: 100000;
+    padding: 5px 0 0 0;
+  }
+  .auth__image {
+    display: None;
+  }
+  .form__container {
+    width: 100% !important;
+  }
+  .notistack-SnackbarContainer {
+    z-index: 100000000 !important;
+  }
+}
+
+

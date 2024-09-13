@@ -8,7 +8,7 @@ import {
     Popover,
     Radio,
     RadioGroup,
-    Typography
+    Typography, useMediaQuery
 } from "@mui/material";
 import React from "react";
 import StyledPaper from "../../../theme/styled/Paper.js";
@@ -16,10 +16,19 @@ import usePopover from "../../../hooks/usePopover.jsx";
 import {useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";
 
-const AvatarPanel = () => {
-    const {user} = useSelector(state => state.user)
+const AvatarPanel = ({handleChange}) => {
+    const breakpoint = useMediaQuery('(max-width:896px)');
     const {openPopover, anchorEl, open, closePopover} = usePopover()
     const navigate = useNavigate()
+    const {user} = useSelector(state => state.user)
+
+    const navigatePage = (url) => {
+        if (breakpoint) {
+            handleChange()
+        }
+        navigate(url)
+        closePopover()
+    }
 
 
     return (
@@ -49,20 +58,25 @@ const AvatarPanel = () => {
                 }}
             >
                 <Box display="flex" flexDirection="column">
-                    <ListItemButton disabled={true} onClick={() => navigate("/my-profile")}>
+                    <ListItemButton disabled={true} onClick={() => navigatePage("/my-profile")}>
                         <Typography variant="subtitle2">Профиль</Typography>
                     </ListItemButton>
                     <Divider/>
-                    <ListItemButton disabled={true} onClick={() => navigate("/my-profile")}>
+                    <ListItemButton disabled={true} onClick={() => navigatePage("/my-profile")}>
                         <Typography variant="subtitle2">Настройки</Typography>
                     </ListItemButton>
                     <Divider/>
-                    <ListItemButton onClick={() => navigate("/regulatory-documentation")}>
+                    <ListItemButton onClick={() => navigatePage("/")}>
+                        <Typography variant="subtitle2">Чат</Typography>
+                    </ListItemButton>
+                    <Divider/>
+                    <ListItemButton onClick={() => navigatePage("/regulatory-documentation")}>
                         <Typography variant="subtitle2">Нормативная документация</Typography>
                     </ListItemButton>
                 </Box>
             </Popover>
         </Box>
+
     )
 }
 

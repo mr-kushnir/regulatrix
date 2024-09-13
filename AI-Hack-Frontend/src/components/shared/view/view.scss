@@ -6,6 +6,13 @@
   transition: var(--transition);
   box-shadow: inset 10px 10px 10px #1c1c1c;
 
+  &__container {
+    height: -webkit-fill-available;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 40px 40px 10px 40px
+  }
 
   &-disabled {
     width: calc(100%);

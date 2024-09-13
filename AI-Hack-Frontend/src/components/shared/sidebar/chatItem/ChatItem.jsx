@@ -1,4 +1,4 @@
-import {Box, Button, IconButton, Popover, Typography, Fade, Divider, useTheme} from "@mui/material";
+import {Box, Button, IconButton, Popover, Typography, Fade, Divider, useTheme, useMediaQuery} from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {useEffect, useState} from "react";
 import StyledPaper from "../../../theme/styled/Paper.js";
@@ -10,12 +10,14 @@ import LoadingProgress from "../../../shared/LoadingProgress.jsx"
 import ChatService from "../../../../services/chat/ChatService.js";
 import {useNavigate} from "react-router-dom";
 
-const ChatItem = ({currentChatIndex, item, index, dispatch}) => {
+const ChatItem = ({isChatLoading, setIsChatLoading, handleChange, currentChatIndex, item, index, dispatch}) => {
+    const breakpoint = useMediaQuery('(max-width:896px)');
     const {anchorEl, open, openPopover, closePopover} = usePopover()
     const [isHovered, setHovered] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const navigate = useNavigate()
     const theme = useTheme()
+
 
     const setupChat = async (e) => {
         navigate("/")
@@ -23,6 +25,10 @@ const ChatItem = ({currentChatIndex, item, index, dispatch}) => {
         e.preventDefault()
         dispatch(setCurrentChatIndex(index))
         setIsLoading(true)
+        setIsChatLoading(true)
+        if (breakpoint) {
+            handleChange()
+        }
         try {
             dispatch(setMessages(
                 await ChatService.getMessages(item.id)
@@ -31,6 +37,7 @@ const ChatItem = ({currentChatIndex, item, index, dispatch}) => {
 
         } finally {
             setIsLoading(false)
+            setIsChatLoading(false)
         }
     }
     const isActive = index === currentChatIndex
@@ -38,6 +45,7 @@ const ChatItem = ({currentChatIndex, item, index, dispatch}) => {
         <>
             <Button onClick={setupChat}
                     fullWidth
+                    disabled={isChatLoading}
                     disableRipple
                     size="small"
                     sx={{

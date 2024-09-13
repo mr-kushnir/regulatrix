@@ -49,7 +49,7 @@ const Registration = ({login, setLogin}) => {
     const disabled = repeatPassword !== password || !name || !password || !repeatPassword || !login
     return (
         <form className="form" onSubmit={registration}>
-            <Box width="50%" display="flex" flexDirection="column" gap='10px'>
+            <Box className="form__container">
                 <TextField label="Имя" onChange={(e) => setName(e.target.value)} value={name}
                            placeholder="Введите имя"
                            variant="outlined"

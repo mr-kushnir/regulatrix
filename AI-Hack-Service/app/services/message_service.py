@@ -112,5 +112,4 @@ class MessageService:
         messages.append({"role": "user", "text": data.message})
         llm_answer = self._get_yagpt_answer(messages)
         logging.info("Обработка сообщения завершена")
-
         return llm_answer

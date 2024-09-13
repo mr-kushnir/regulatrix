@@ -27,7 +27,7 @@
 
 /* Стиль для трека скроллбара */
 ::-webkit-scrollbar-track {
-  background-color: #f1f1f1; /* Цвет трека */
+  background-color: var(--light-gray); /* Цвет трека */
   border-radius: 10px; /* Скругление углов трека */
 }
 
@@ -71,6 +71,7 @@ a {
 :root {
   //color
   --light-gray: #212121;
+  --middle-gray: #2f2f2f;
   --dark-gray: #171717;
   --black: #212b36;
   --white-gray: #838383;
@@ -120,9 +121,54 @@ h1, h2, h3, h4, h5, h6, p {
   object-fit: contain;
 }
 
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--dark-gray);
+}
 
-@import "components/shared/sidebar/sidebar.scss";
-@import "components/shared/view/view.scss";
-@import "components/pages/auth/auth.scss";
+th, td {
+  padding: 0.5em;
+  border: 1px solid var(--dark-gray);
+  text-align: left;
+}
+
+th {
+  background-color: var(--middle-gray);
+}
+
+.notistack-SnackbarContainer {
+  z-index: 10000000000;
+}
+
+.form {
+  z-index: 999;
+}
+
+.logo {
+  width: 145px;
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+
+  &__container {
+    display: flex;
+    width: 50%;
+    flex-direction: column;
+    gap: 10px
+  }
+}
+
+@import "../components/shared/sidebar/sidebar";
+@import "../components/shared/view/view";
+@import "../components/pages/auth/auth";
+@import "../components/pages/header/header";
 
 
+@import "index.media";

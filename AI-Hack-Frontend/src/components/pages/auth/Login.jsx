@@ -19,7 +19,7 @@ const Login = ({login, setLogin, setIsExisting}) => {
 
     return (
         <form className="form" onSubmit={check ? authorize : checkUser}>
-            <Box display="flex" width='50%' flexDirection="column" gap='10px'>
+            <Box className="form__container">
                 {check ? <>
                     <TextField label="Пароль" onChange={(e) => setPassword(e.target.value)} value={password}
                                placeholder="Введите пароль"

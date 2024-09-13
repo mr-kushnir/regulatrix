@@ -1,4 +1,4 @@
-import {Box, Collapse, Fade, Typography, Skeleton, useTheme} from "@mui/material";
+import {Box, Collapse, Typography, Skeleton, useTheme} from "@mui/material";
 import clsx from "clsx";
 import {useSelector, useDispatch} from "react-redux";
 import {useEffect, useState,} from "react";
@@ -7,9 +7,8 @@ import ChatService from '../../../services/chat/ChatService'
 import {setChats} from "../../../store/slices/chat/chatSlice"
 import AvatarPanel from "./avatarPanel/AvatarPanel.jsx";
 import FindInput from "./findInput/FindInput.jsx";
-import LinearProgress from '@mui/material/LinearProgress';
 
-const LeftSidebar = ({isSidebarOpen}) => {
+const LeftSidebar = ({setIsChatLoading, isChatLoading, isSidebarOpen, handleChange}) => {
     const dispatch = useDispatch()
     const [isLoading, setIsLoading] = useState(true)
     const theme = useTheme()
@@ -21,6 +20,7 @@ const LeftSidebar = ({isSidebarOpen}) => {
     useEffect(() => {
         const fetchChats = async () => {
             setIsLoading(true)
+            setIsChatLoading(true)
             try {
                 const chats = await ChatService.getChats(user.id)
                 dispatch(setChats(chats))
@@ -28,16 +28,18 @@ const LeftSidebar = ({isSidebarOpen}) => {
 
             } finally {
                 setIsLoading(false)
+                setIsChatLoading(false)
+
             }
         }
         fetchChats()
     }, []);
-    console.log(currentChatIndex)
+
     return <Box className={clsx({
         menu: true, "menu-disabled": !isSidebarOpen,
     })}>
-        <Box p='20px 10px 20px 10px' mt="50px" display="flex" flexDirection="column" width="100%">
-            <Box display="flex" flexDirection="column" overflow="hidden" flexGrow={1}>
+        <Box p='20px 10px 20px 10px' mt="30px" display="flex" flexDirection="column" width="100%">
+            <Box display="flex" flexDirection="column" overflow="hidden" flexGrow={1} sx={{overflowY: "auto"}}>
                 <FindInput user={user}/>
                 <Box p='0 0 5px 3px'>
                     <Typography variant="subtitle" color={theme.palette.primary.gray}
@@ -54,13 +56,16 @@ const LeftSidebar = ({isSidebarOpen}) => {
                 </Collapse>
                 <Collapse in={!isLoading}>
                     <Box display='flex' flexDirection="column" gap='5px'>
-                        {chats.map((item, index) => <ChatItem key={item.id} item={item} index={index}
+                        {chats.map((item, index) => <ChatItem isChatLoading={isChatLoading}
+                                                              handleChange={handleChange}
+                                                              setIsChatLoading={setIsChatLoading} key={item.id}
+                                                              item={item} index={index}
                                                               dispatch={dispatch}
                                                               currentChatIndex={currentChatIndex}/>)}
                     </Box>
                 </Collapse>
             </Box>
-            <AvatarPanel/>
+            <AvatarPanel handleChange={handleChange}/>
         </Box>
     </Box>
 }
