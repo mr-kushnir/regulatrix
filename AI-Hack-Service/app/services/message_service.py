@@ -78,7 +78,6 @@ class MessageService:
             return additional_chunks
         return []
 
-
     async def process_message(self, context: ApplicationContext, data: DataSchema) -> str:
         AI = context.AI
 
@@ -107,11 +106,11 @@ class MessageService:
         # Подаем чанки в system prompt, после чего идет диалог.
         messages = [{"role": "system", "text": AI.llm_prompt.format_map({'chunks': chunks_prompt})}]
         for message in data.context:
-            role = "user" if message.message_type == MessageTypeEnum.USER else "assistant"
-            messages.append({"role": role, "text": message.message})
+            if message.message:
+                role = "user" if message.message_type == MessageTypeEnum.USER else "assistant"
+                messages.append({"role": role, "text": message.message})
         messages.append({"role": "user", "text": data.message})
         llm_answer = self._get_yagpt_answer(messages)
-
         logging.info("Обработка сообщения завершена")
 
         return llm_answer
