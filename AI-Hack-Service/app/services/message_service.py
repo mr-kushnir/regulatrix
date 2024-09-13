@@ -44,6 +44,32 @@ class MessageService:
         response_text = json.loads(response.text)['result']['alternatives'][0]['message']['text']
         return response_text
 
+    async def _get_best_chunks_for_question(self, context: ApplicationContext, question: str, chunks_count: int):
+        AI = context.AI
+        query_embed = await self._get_query_embedding(AI, question)
+        scores = (query_embed @ AI.embeddings.T) * 100
+        sorted_ind_scores = list(sorted(enumerate(scores), key=lambda x: x[1], reverse=True))
+        best_inds = [x[0] for x in sorted_ind_scores[:chunks_count]]
+        best_chunks = [AI.chunk_prompt.format_map(
+            {'chunk': AI.chunks[ind],
+             'title': AI.titles[ind]})
+            for ind in best_inds]
+        return best_chunks
+
+    async def _get_additional_chunks(self, context: ApplicationContext, chunks, question):
+        AI = context.AI
+        prompt = AI.additional_prompt.format_map({"chunks": chunks, "question": question})
+        messages = [{
+            "role": "user",
+            "text": prompt
+        }]
+        answer = self._get_yagpt_answer(messages)
+        if answer.strip()[:2].lower() != 'да':
+            additional_chunks = await self._get_best_chunks_for_question(context, answer, 3)
+            return additional_chunks
+        return []
+
+
     async def process_message(self, context: ApplicationContext, data: DataSchema) -> str:
         AI = context.AI
         if context:
@@ -55,15 +81,13 @@ class MessageService:
         else:
             final_message = data.message
 
-        query_embed = await self._get_query_embedding(AI, final_message)
-        scores = (query_embed @ AI.embeddings.T) * 100
-        sorted_ind_scores = list(sorted(enumerate(scores), key=lambda x: x[1], reverse=True))
-        best_inds = [x[0] for x in sorted_ind_scores[:3]]
-        best_chunks = [AI.chunks[ind] for ind in best_inds]
+        best_chunks = await self._get_best_chunks_for_question(context, final_message, 3)
+        best_chunks += await self._get_additional_chunks(context, best_chunks, final_message)
+        best_chunks = list(set(best_chunks))
 
         chunks_prompt = ""
         for i, chunk in enumerate(best_chunks, 1):
-            chunks_prompt += f"Фрагмент {i}: \n{chunk}\n\n"
+            chunks_prompt += f"\n{chunk}\n\n"
 
         messages = [{"role": "system", "text": AI.llm_prompt.format_map({'chunks': chunks_prompt})}]
         for message in data.context:
