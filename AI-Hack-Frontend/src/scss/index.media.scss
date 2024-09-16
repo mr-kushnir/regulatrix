@@ -1,6 +1,13 @@
 @media(max-width: 896px) {
+  html {
+    height: 100%;
+  }
   body {
     width: auto;
+    height: 100%;
+  }
+  #root {
+    height: 100%;
   }
   .menu {
     width: 100%;
@@ -10,6 +17,7 @@
     right: 0;
     bottom: 0;
     z-index: 1000;
+    //min-height: auto;
   }
   .menu-disabled {
     left: -100%;
@@ -17,21 +25,25 @@
   .view {
     width: 100%;
     background-color: var(--light-gray);
-    min-height: 100vh;
+    min-height: unset;
     transition: var(--transition);
     box-shadow: inset 10px 10px 10px #1c1c1c;
 
     &__container {
-      height: -webkit-fill-available;
       position: relative;
       display: flex;
       flex-direction: column;
-      padding: 40px 10px 10px 10px
+      padding: 0 10px 10px 10px
+    }
+
+    &__gradient {
+      bottom: 48px;
     }
   }
   .header {
     z-index: 100000;
     padding: 5px 0 0 0;
+    position: relative;
   }
   .auth__image {
     display: None;
